@@ -15,13 +15,16 @@ class TuistEwa < Formula
   def install
     ENV["SWIFT_BUILD_ENABLE_SANDBOX"] = "0"
     system "swift", "build", "--disable-sandbox", "--replace-scm-with-registry", "--product", "tuist", "-c", "release"
-    bin.install ".build/release/tuist"
+
+    build_products = Pathname.new(Utils.safe_popen_read("swift", "build", "--disable-sandbox", "--replace-scm-with-registry", "--show-bin-path", "-c", "release").strip)
+
+    bin.install build_products/"tuist"
 
     frameworks_path = libexec/"Frameworks"
     frameworks_path.mkpath
 
-    dylibs = Pathname.glob(".build/**/*ProjectDescription*.dylib")
-    frameworks = Pathname.glob(".build/**/*ProjectDescription*.framework")
+    dylibs = build_products.glob("libProjectDescription*.dylib")
+    frameworks = build_products.glob("ProjectDescription*.framework")
 
     (dylibs + frameworks).each do |path|
       destination = frameworks_path/path.basename
