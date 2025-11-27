@@ -15,15 +15,18 @@ class TuistEwa < Formula
   def install
     ENV["SWIFT_BUILD_ENABLE_SANDBOX"] = "0"
     scratch = buildpath/"swift-build"
-    build_args = [
+    base_args = [
       "swift", "build",
       "--disable-sandbox",
       "--replace-scm-with-registry",
       "--scratch-path", scratch,
-      "--product", "tuist",
       "-c", "release",
     ]
-    system(*build_args)
+    system(*(base_args + ["--product", "tuist"]))
+
+    %w[ProjectDescription ProjectAutomation].each do |product|
+      system(*(base_args + ["--product", product]))
+    end
 
     build_products = Pathname.new(
       Utils.safe_popen_read(
@@ -38,18 +41,22 @@ class TuistEwa < Formula
 
     bin.install build_products/"tuist"
 
+    architecture_output = Pathname.glob(scratch/"*-apple-macosx/release").first
+    odie "Unable to locate release build output in #{scratch}" unless architecture_output
+
     frameworks_path = libexec/"Frameworks"
     frameworks_path.mkpath
 
-    dylibs = build_products.glob("libProjectDescription*.dylib")
-    frameworks = build_products.glob("ProjectDescription*.framework")
+    {
+      "ProjectDescription" => %w[swiftmodule swiftdoc swiftsourceinfo abi.json],
+      "ProjectAutomation" => %w[swiftmodule swiftdoc swiftsourceinfo abi.json],
+    }.each do |product, extensions|
+      dylib_path = architecture_output/"lib#{product}.dylib"
+      cp dylib_path, frameworks_path
 
-    (dylibs + frameworks).each do |path|
-      destination = frameworks_path/path.basename
-      if path.directory?
-        cp_r path, destination
-      else
-        cp path, destination
+      modules_dir = architecture_output/"Modules"
+      Pathname.glob("#{modules_dir}/#{product}.{#{extensions.join(",")}}").each do |module_file|
+        cp module_file, frameworks_path
       end
     end
 
