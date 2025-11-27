@@ -12,7 +12,7 @@ class TuistEwa < Formula
 
   def install
     ENV["SWIFT_BUILD_ENABLE_SANDBOX"] = "0"
-    system "swift", "build", "--product", "tuist", "-c", "release"
+    system "swift", "build", "--disable-sandbox", "--product", "tuist", "-c", "release"
     bin.install ".build/release/tuist"
 
     frameworks_path = libexec/"Frameworks"
