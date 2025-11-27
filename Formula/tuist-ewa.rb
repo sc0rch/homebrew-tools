@@ -11,6 +11,7 @@ class TuistEwa < Formula
   depends_on xcode: ["15.0", :build]
 
   def install
+    ENV["SWIFT_BUILD_ENABLE_SANDBOX"] = "0"
     system "swift", "build", "--product", "tuist", "-c", "release"
     bin.install ".build/release/tuist"
 
