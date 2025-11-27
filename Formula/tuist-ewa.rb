@@ -14,9 +14,27 @@ class TuistEwa < Formula
 
   def install
     ENV["SWIFT_BUILD_ENABLE_SANDBOX"] = "0"
-    system "swift", "build", "--disable-sandbox", "--replace-scm-with-registry", "--product", "tuist", "-c", "release"
+    scratch = buildpath/"swift-build"
+    build_args = [
+      "swift", "build",
+      "--disable-sandbox",
+      "--replace-scm-with-registry",
+      "--scratch-path", scratch,
+      "--product", "tuist",
+      "-c", "release",
+    ]
+    system(*build_args)
 
-    build_products = Pathname.new(Utils.safe_popen_read("swift", "build", "--disable-sandbox", "--replace-scm-with-registry", "--show-bin-path", "-c", "release").strip)
+    build_products = Pathname.new(
+      Utils.safe_popen_read(
+        "swift", "build",
+        "--disable-sandbox",
+        "--replace-scm-with-registry",
+        "--scratch-path", scratch,
+        "--show-bin-path",
+        "-c", "release"
+      ).strip
+    )
 
     bin.install build_products/"tuist"
 
