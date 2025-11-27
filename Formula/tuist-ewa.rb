@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "pathname"
+
 class TuistEwa < Formula
   desc "Tuist fork with skipPackageResolution flag"
   homepage "https://github.com/sc0rch/tuist"
@@ -17,8 +19,18 @@ class TuistEwa < Formula
 
     frameworks_path = libexec/"Frameworks"
     frameworks_path.mkpath
-    cp_r Dir[".build/release/*.dylib"], frameworks_path
-    cp_r Dir[".build/release/*.framework"], frameworks_path
+
+    dylibs = Pathname.glob(".build/**/*ProjectDescription*.dylib")
+    frameworks = Pathname.glob(".build/**/*ProjectDescription*.framework")
+
+    (dylibs + frameworks).each do |path|
+      destination = frameworks_path/path.basename
+      if path.directory?
+        cp_r path, destination
+      else
+        cp path, destination
+      end
+    end
 
     (bin/"tuist-ewa").write <<~EOS
       #!/bin/bash
