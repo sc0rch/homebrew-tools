@@ -5,9 +5,9 @@ require "pathname"
 class TuistEwa < Formula
   desc "Tuist fork with skipPackageResolution flag"
   homepage "https://github.com/sc0rch/tuist"
-  url "https://github.com/sc0rch/tuist/archive/refs/heads/homebrew-4.109.1.tar.gz"
-  version "4.109.1-ewa"
-  sha256 "11d02d082ed1fe6a037e2efd5c2f7f5acdbc7f40dcd720f6734e6b035d5ffe0a"
+  url "https://github.com/sc0rch/tuist/archive/refs/heads/homebrew-4.116.1.tar.gz"
+  version "4.116.1-ewa"
+  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
   license "Apache-2.0"
 
   depends_on xcode: ["15.0", :build]
