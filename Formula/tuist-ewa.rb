@@ -5,9 +5,9 @@ require "pathname"
 class TuistEwa < Formula
   desc "Tuist fork"
   homepage "https://github.com/sc0rch/tuist-ewa"
-  url "https://github.com/sc0rch/tuist-ewa/releases/download/4.118.1-ewa.1/tuist.zip"
-  version "4.118.1-ewa.1"
-  sha256 "438381a21d7756846bfcec04668ded2a324cd26116315e3a911b29ce68f4fffa"
+  url "https://github.com/sc0rch/tuist-ewa/releases/download/4.118.1-ewa.2/tuist.zip"
+  version "4.118.1-ewa.2"
+  sha256 "3ceb4c5bcc506cc9e47ded8d34f9d4c073ce955ab74d72db1e04314db6285412"
   license "Apache-2.0"
 
   def install
