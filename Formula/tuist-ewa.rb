@@ -16,7 +16,6 @@ class TuistEwa < Formula
     libexec.install "tuist-ewa"
     libexec.install "Templates"
 
-    libexec.install "ProjectDescription.framework"
     (libexec/"Frameworks").install "ProjectDescription.framework"
 
     if Pathname("ProjectDescription.framework.dSYM").exist?
