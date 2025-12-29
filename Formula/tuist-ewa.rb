@@ -11,11 +11,17 @@ class TuistEwa < Formula
   license "Apache-2.0"
 
   def install
-    bin.install "tuist"
+    (libexec/"Frameworks").mkpath
 
-    lib.install "ProjectDescription.framework"
+    libexec.install "tuist-ewa"
+    libexec.install "Templates"
 
-    share.install "Templates"
+    libexec.install "ProjectDescription.framework"
+    (libexec/"Frameworks").install "ProjectDescription.framework"
+
+    if Pathname("ProjectDescription.framework.dSYM").exist?
+      libexec.install "ProjectDescription.framework.dSYM"
+    end
 
     if Pathname("vendor").exist?
       libexec.install "vendor"
@@ -23,7 +29,9 @@ class TuistEwa < Formula
 
     (bin/"tuist-ewa").write <<~EOS
       #!/bin/bash
-      exec "#{bin}/tuist" "$@"
+      export TUIST_FRAMEWORK_SEARCH_PATHS="#{libexec}/Frameworks"
+      export TUIST_TEMPLATES_PATH="#{libexec}"
+      exec "#{libexec}/tuist-ewa" "$@"
     EOS
     chmod 0755, bin/"tuist-ewa"
   end
